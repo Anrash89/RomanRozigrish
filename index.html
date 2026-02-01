@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roman Magic Randomizer</title>
+    <title>Roman Magic</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #9b59b6;
             --accent: #f1c40f;
             --bg: #1e1e1e;
-            --card-bg: #2b2b2b;
             --text: #ffffff;
         }
 
@@ -25,7 +24,7 @@
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
-            user-select: none; /* Защита от выделения текста */
+            user-select: none;
         }
 
         .container {
@@ -38,14 +37,12 @@
         h1 {
             color: var(--primary);
             text-shadow: 0 0 15px rgba(155, 89, 182, 0.6);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             font-weight: 800;
             letter-spacing: 2px;
             text-transform: uppercase;
-            font-size: 28px;
         }
 
-        /* Окно рулетки */
         .roulette-window {
             background: linear-gradient(145deg, #0f0f0f, #252525);
             border: 2px solid var(--primary);
@@ -56,18 +53,13 @@
             justify-content: center;
             margin-bottom: 40px;
             box-shadow: 0 0 30px rgba(155, 89, 182, 0.2);
-            position: relative;
-            overflow: hidden;
         }
 
-        /* Элемент, который показывает текущий ID */
         #display-id {
             font-family: 'Courier New', monospace;
             font-size: 32px;
             font-weight: bold;
             color: var(--accent);
-            letter-spacing: 1px;
-            z-index: 2;
             text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
         }
 
@@ -77,81 +69,39 @@
             transform: scale(1.1);
         }
 
-        /* Кнопка запуска */
         .magic-btn {
             background: linear-gradient(90deg, #8e44ad, #9b59b6);
             color: white;
             border: none;
-            padding: 18px 50px;
-            font-size: 20px;
+            padding: 18px 30px;
+            font-size: 18px;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(142, 68, 173, 0.4);
-            transition: transform 0.1s, box-shadow 0.2s;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
             width: 100%;
-            max-width: 300px;
+            transition: transform 0.1s;
         }
 
-        .magic-btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
-        }
+        .magic-btn:active { transform: scale(0.96); }
+        .magic-btn:disabled { background: #444; color: #888; box-shadow: none; cursor: default;}
 
-        .magic-btn:disabled {
-            background: #444;
-            color: #888;
-            cursor: default;
-            box-shadow: none;
-        }
-
-        /* Блок результата */
-        #result-area {
+        /* Кнопка отправки результата (изначально скрыта) */
+        #send-result-btn {
             display: none;
-            margin-top: 30px;
-            animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(46, 204, 113, 0.3);
         }
 
         .winner-label {
-            color: #aaa; 
-            font-size: 14px; 
-            text-transform: uppercase; 
+            display: none;
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 20px;
             letter-spacing: 2px;
-            margin-bottom: 15px;
-        }
-
-        .winner-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .action-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: background 0.2s, transform 0.2s;
-        }
-        
-        .action-link:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .icon { margin-right: 10px; font-size: 18px; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -164,27 +114,17 @@
             <div id="display-id">READY?</div>
         </div>
 
-        <button id="spin-btn" class="magic-btn">START</button>
-
-        <div id="result-area">
-            <div class="winner-label">Победитель</div>
-            <div class="winner-actions">
-                <a id="link-chat" href="#" class="action-link" target="_blank">
-                    <span class="icon">💬</span> Написать победителю
-                </a>
-                <a id="link-profile" href="#" class="action-link" target="_blank">
-                    <span class="icon">👤</span> Открыть профиль
-                </a>
-            </div>
-            <p style="font-size: 11px; color: #555; margin-top: 20px;">ID скопирован</p>
-        </div>
+        <button id="spin-btn" class="magic-btn">Найти победителя</button>
+        
+        <div class="winner-label" id="winner-label">Победитель:</div>
+        <button id="send-result-btn" class="magic-btn">📤 Отправить в чат</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); 
+        tg.expand();
 
-        // СПИСОК УЧАСТНИКОВ (Вшит жестко)
+        // Тот же список ID
         const participants = [
             "550605652", "1597985013", "8419976249", "7945922768", "517873126",
             "1861451168", "7734876506", "1854932939", "1871676088", "1861451168",
@@ -207,44 +147,48 @@
 
         const displayId = document.getElementById('display-id');
         const spinBtn = document.getElementById('spin-btn');
-        const resultArea = document.getElementById('result-area');
-        const linkProfile = document.getElementById('link-profile');
-        const linkChat = document.getElementById('link-chat');
+        const sendBtn = document.getElementById('send-result-btn');
+        const winnerLabel = document.getElementById('winner-label');
+
+        let finalWinnerId = null;
 
         spinBtn.addEventListener('click', () => {
             startRoulette(participants);
         });
 
+        // Отправка данных боту при нажатии зеленой кнопки
+        sendBtn.addEventListener('click', () => {
+            if (finalWinnerId) {
+                // Это отправляет данные боту и закрывает окно
+                tg.sendData(finalWinnerId); 
+            }
+        });
+
         function startRoulette(ids) {
             spinBtn.disabled = true;
-            spinBtn.innerText = "В ПОИСКЕ...";
-            resultArea.style.display = 'none';
+            spinBtn.innerText = "ИЩЕМ...";
             displayId.classList.add('blur-effect');
 
             let speed = 40; 
-            let duration = 3500; // Крутим 3.5 секунды минимум
+            let duration = 3000;
             let startTime = Date.now();
             
-            // Выбираем победителя
             const winnerIndex = Math.floor(Math.random() * ids.length);
-            const winnerId = ids[winnerIndex];
+            finalWinnerId = ids[winnerIndex];
 
             const interval = setInterval(() => {
-                // Показываем случайный ID
                 const randomId = ids[Math.floor(Math.random() * ids.length)];
                 displayId.innerText = randomId;
-
                 const elapsed = Date.now() - startTime;
 
                 if (elapsed > duration) {
-                    speed += 30; // Начинаем тормозить
-                    
+                    speed += 30;
                     if (speed > 450) {
                         clearInterval(interval);
-                        finalizeWinner(winnerId);
+                        finalizeWinner(finalWinnerId);
                     } else {
                         clearInterval(interval);
-                        runTick(ids, speed, winnerId);
+                        runTick(ids, speed, finalWinnerId);
                     }
                 }
             }, speed);
@@ -253,7 +197,7 @@
                 const tick = setInterval(() => {
                     const randomId = idList[Math.floor(Math.random() * idList.length)];
                     displayId.innerText = randomId;
-                    currentSpeed += 60; // Сильнее замедляем
+                    currentSpeed += 60;
                     clearInterval(tick);
                     
                     if (currentSpeed > 700) {
@@ -268,21 +212,16 @@
         function finalizeWinner(winnerId) {
             displayId.innerText = winnerId;
             displayId.classList.remove('blur-effect');
-            
             tg.HapticFeedback.notificationOccurred('success');
 
-            // Обновляем ссылки
-            linkProfile.href = `tg://user?id=${winnerId}`;
-            linkChat.href = `tg://openmessage?user_id=${winnerId}`;
-
-            navigator.clipboard.writeText(winnerId);
-
-            resultArea.style.display = 'block';
-            spinBtn.style.display = 'none'; // Скрываем кнопку, чтобы не нажать второй раз
-            
-            // Цвет победителя
+            // Стиль
             displayId.style.color = '#fff';
-            displayId.style.textShadow = '0 0 25px #f1c40f, 0 0 50px #f1c40f';
+            displayId.style.textShadow = '0 0 25px #f1c40f';
+
+            // Скрываем кнопку спина, показываем кнопку отправки
+            spinBtn.style.display = 'none';
+            winnerLabel.style.display = 'block';
+            sendBtn.style.display = 'block';
         }
     </script>
 </body>
