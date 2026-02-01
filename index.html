@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Roman Magic Randomizer</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #9b59b6;
+            --accent: #f1c40f;
+            --bg: #1e1e1e;
+            --card-bg: #2b2b2b;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none; /* Защита от выделения текста */
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(155, 89, 182, 0.6);
+            margin-bottom: 40px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 28px;
+        }
+
+        /* Окно рулетки */
+        .roulette-window {
+            background: linear-gradient(145deg, #0f0f0f, #252525);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            box-shadow: 0 0 30px rgba(155, 89, 182, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Элемент, который показывает текущий ID */
+        #display-id {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 1px;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+        }
+
+        .blur-effect {
+            filter: blur(3px);
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        /* Кнопка запуска */
+        .magic-btn {
+            background: linear-gradient(90deg, #8e44ad, #9b59b6);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(142, 68, 173, 0.4);
+            transition: transform 0.1s, box-shadow 0.2s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .magic-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.4);
+        }
+
+        .magic-btn:disabled {
+            background: #444;
+            color: #888;
+            cursor: default;
+            box-shadow: none;
+        }
+
+        /* Блок результата */
+        #result-area {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .winner-label {
+            color: #aaa; 
+            font-size: 14px; 
+            text-transform: uppercase; 
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .winner-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: background 0.2s, transform 0.2s;
+        }
+        
+        .action-link:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .icon { margin-right: 10px; font-size: 18px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Roman Magic</h1>
+
+        <div class="roulette-window">
+            <div id="display-id">READY?</div>
+        </div>
+
+        <button id="spin-btn" class="magic-btn">START</button>
+
+        <div id="result-area">
+            <div class="winner-label">Победитель</div>
+            <div class="winner-actions">
+                <a id="link-chat" href="#" class="action-link" target="_blank">
+                    <span class="icon">💬</span> Написать победителю
+                </a>
+                <a id="link-profile" href="#" class="action-link" target="_blank">
+                    <span class="icon">👤</span> Открыть профиль
+                </a>
+            </div>
+            <p style="font-size: 11px; color: #555; margin-top: 20px;">ID скопирован</p>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); 
+
+        // СПИСОК УЧАСТНИКОВ (Вшит жестко)
+        const participants = [
+            "550605652", "1597985013", "8419976249", "7945922768", "517873126",
+            "1861451168", "7734876506", "1854932939", "1871676088", "1861451168",
+            "445195021", "635812082", "915868578", "1331811492", "492574599",
+            "813874646", "7698016067", "8034339835", "1706958950", "364207672",
+            "8565090136", "1766466746", "615298392", "405203659", "1631710656",
+            "85307719", "5378585403", "840455913", "259493394", "212094399",
+            "5164460627", "2072457584", "769185899", "1197364299", "1177536933",
+            "1921802018", "279643290", "1757883681", "329508160", "1302309876",
+            "7487867122", "1138593347", "1955748867", "571181336", "2033205905",
+            "1248443153", "867747337", "1150969696", "980637250", "418772521",
+            "1344891758", "2007432621", "742440405", "831857420", "746273920",
+            "5242459051", "5235123875", "913430194", "444069806", "7909218422",
+            "729564002", "6495686955", "1397573032", "1078831576", "1362100325",
+            "5197671141", "380860537", "6151174260", "1084442323", "693259655",
+            "8300377158", "8197344106", "648018494", "1830650453", "1016022102",
+            "2019768544", "1968190272", "7960188048", "1523688372", "7824519653",
+            "892066143", "88645013", "5168376671", "678967162"
+        ];
+
+        const displayId = document.getElementById('display-id');
+        const spinBtn = document.getElementById('spin-btn');
+        const resultArea = document.getElementById('result-area');
+        const linkProfile = document.getElementById('link-profile');
+        const linkChat = document.getElementById('link-chat');
+
+        spinBtn.addEventListener('click', () => {
+            startRoulette(participants);
+        });
+
+        function startRoulette(ids) {
+            spinBtn.disabled = true;
+            spinBtn.innerText = "В ПОИСКЕ...";
+            resultArea.style.display = 'none';
+            displayId.classList.add('blur-effect');
+
+            let speed = 40; 
+            let duration = 3500; // Крутим 3.5 секунды минимум
+            let startTime = Date.now();
+            
+            // Выбираем победителя
+            const winnerIndex = Math.floor(Math.random() * ids.length);
+            const winnerId = ids[winnerIndex];
+
+            const interval = setInterval(() => {
+                // Показываем случайный ID
+                const randomId = ids[Math.floor(Math.random() * ids.length)];
+                displayId.innerText = randomId;
+
+                const elapsed = Date.now() - startTime;
+
+                if (elapsed > duration) {
+                    speed += 30; // Начинаем тормозить
+                    
+                    if (speed > 450) {
+                        clearInterval(interval);
+                        finalizeWinner(winnerId);
+                    } else {
+                        clearInterval(interval);
+                        runTick(ids, speed, winnerId);
+                    }
+                }
+            }, speed);
+
+            function runTick(idList, currentSpeed, finalWinner) {
+                const tick = setInterval(() => {
+                    const randomId = idList[Math.floor(Math.random() * idList.length)];
+                    displayId.innerText = randomId;
+                    currentSpeed += 60; // Сильнее замедляем
+                    clearInterval(tick);
+                    
+                    if (currentSpeed > 700) {
+                        finalizeWinner(finalWinner);
+                    } else {
+                        runTick(idList, currentSpeed, finalWinner);
+                    }
+                }, currentSpeed);
+            }
+        }
+
+        function finalizeWinner(winnerId) {
+            displayId.innerText = winnerId;
+            displayId.classList.remove('blur-effect');
+            
+            tg.HapticFeedback.notificationOccurred('success');
+
+            // Обновляем ссылки
+            linkProfile.href = `tg://user?id=${winnerId}`;
+            linkChat.href = `tg://openmessage?user_id=${winnerId}`;
+
+            navigator.clipboard.writeText(winnerId);
+
+            resultArea.style.display = 'block';
+            spinBtn.style.display = 'none'; // Скрываем кнопку, чтобы не нажать второй раз
+            
+            // Цвет победителя
+            displayId.style.color = '#fff';
+            displayId.style.textShadow = '0 0 25px #f1c40f, 0 0 50px #f1c40f';
+        }
+    </script>
+</body>
+</html>
