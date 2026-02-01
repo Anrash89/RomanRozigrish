@@ -8,12 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #4fabd8; /* Голубой фон как на фото */
+            --bg-color: #4fabd8;
             --card-bg: #ffffff;
-            --display-bg: #151922; /* Темный фон для номера */
+            --display-bg: #151922;
             --text-gold: #f4d03f;
             --btn-green: #2ecc71;
-            --btn-green-hover: #27ae60;
             --text-dark: #2c3e50;
         }
 
@@ -29,34 +28,27 @@
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
-            position: relative;
         }
 
-        /* --- ФОНОВЫЕ ЭЛЕМЕНТЫ (Шарики и подарки) --- */
+        /* Декорации фона */
         .background-decor {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
-            overflow: hidden;
         }
-        
         .decor-item {
             position: absolute;
             font-size: 40px;
             opacity: 0.8;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
             animation: floatUp 8s infinite linear;
         }
-
-        /* Расставляем элементы как на первом фото */
-        .d1 { top: 5%; left: 5%; animation-delay: 0s; font-size: 50px; } /* Шарик */
-        .d2 { top: 10%; right: 5%; animation-delay: 2s; font-size: 45px; } /* Подарок */
-        .d3 { top: 40%; left: 15%; animation-delay: 4s; font-size: 55px; } /* Подарок */
-        .d4 { top: 35%; right: 15%; animation-delay: 1s; font-size: 50px; } /* Подарок */
-        .d5 { bottom: 20%; left: 10%; animation-delay: 3s; font-size: 40px; } /* Шарик */
-        .d6 { bottom: 15%; right: 10%; animation-delay: 5s; font-size: 45px; } /* Подарок */
-        .d7 { bottom: 5%; right: 40%; animation-delay: 2.5s; font-size: 35px; } /* Шарик */
+        .d1 { top: 5%; left: 5%; animation-delay: 0s; font-size: 50px; }
+        .d2 { top: 10%; right: 5%; animation-delay: 2s; font-size: 45px; }
+        .d3 { top: 40%; left: 15%; animation-delay: 4s; font-size: 55px; }
+        .d4 { top: 35%; right: 15%; animation-delay: 1s; font-size: 50px; }
+        .d5 { bottom: 20%; left: 10%; animation-delay: 3s; font-size: 40px; }
+        .d6 { bottom: 15%; right: 10%; animation-delay: 5s; font-size: 45px; }
 
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); }
@@ -64,59 +56,45 @@
             100% { transform: translateY(0) rotate(0deg); }
         }
 
-        /* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
         .container {
             position: relative;
             z-index: 10;
             width: 90%;
             max-width: 380px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
         }
 
-        /* --- ЗАГОЛОВОК --- */
         .header-section {
-            opacity: 0; /* Скрыт до победы */
+            opacity: 0;
             transform: translateY(-20px);
             transition: all 0.5s ease;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .trophy-icon {
             font-size: 48px;
             background: rgba(255, 255, 255, 0.2);
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             margin: 0 auto 10px auto;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         h1 {
             color: white;
             font-weight: 800;
-            font-size: 28px;
+            font-size: 26px;
             text-transform: uppercase;
             margin: 0;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            line-height: 1.1;
         }
 
-        /* --- БЕЛАЯ КАРТОЧКА --- */
         .card {
             background: var(--card-bg);
             border-radius: 30px;
             padding: 25px 20px;
-            width: 100%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            box-sizing: border-box;
-            border: 4px solid white; /* Белая обводка как на референсе */
+            border: 4px solid white;
         }
 
         .label-text {
@@ -128,79 +106,30 @@
             font-weight: 600;
         }
 
-        /* Темное поле с номером */
         .ticket-display {
             background: var(--display-bg);
             border-radius: 16px;
-            padding: 20px 0;
+            padding: 20px 10px;
             margin-bottom: 20px;
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #display-id {
             font-family: 'Montserrat', sans-serif;
-            font-size: 38px;
+            /* Шрифт чуть меньше, чтобы длинные ники влезали */
+            font-size: 24px; 
             font-weight: 800;
             color: var(--text-gold);
             text-shadow: 0 0 15px rgba(244, 208, 63, 0.6);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             z-index: 2;
-            position: relative;
-        }
-
-        /* Эффект свечения внутри поля */
-        .ticket-display::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%; height: 50%;
-            background: rgba(244, 208, 63, 0.1);
-            filter: blur(20px);
-            z-index: 1;
-        }
-
-        /* Информация об участнике (Аватар и имя) */
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .avatar-placeholder {
-            width: 50px;
-            height: 50px;
-            background: #e0e0e0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            margin-bottom: 5px;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .user-name {
-            font-weight: 700;
-            font-size: 16px;
-            color: #2c3e50;
-        }
-
-        .timestamp {
-            font-size: 11px;
-            color: #bdc3c7;
-        }
-
-        /* --- КНОПКИ --- */
-        .btn-container {
-            width: 100%;
-            margin-top: 10px;
+            word-break: break-all;
         }
 
         .btn {
@@ -215,42 +144,15 @@
             font-weight: 700;
             width: 100%;
             text-transform: uppercase;
-            box-shadow: 0 6px 0 #27ae60, 0 10px 20px rgba(46, 204, 113, 0.3); /* 3D эффект */
-            transition: all 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            box-shadow: 0 6px 0 #27ae60, 0 10px 20px rgba(46, 204, 113, 0.3);
+            margin-top: 20px;
         }
 
-        .btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #27ae60, 0 4px 10px rgba(46, 204, 113, 0.3);
-        }
-
-        .btn:disabled {
-            background: #95a5a6;
-            box-shadow: none;
-            cursor: default;
-        }
-
-        .btn-spin {
-            background: #f39c12; /* Оранжевая для старта */
-            box-shadow: 0 6px 0 #d35400, 0 10px 20px rgba(243, 156, 18, 0.3);
-        }
-        
-        .btn-spin:active {
-            box-shadow: 0 2px 0 #d35400;
-        }
-
+        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #27ae60; }
+        .btn-spin { background: #f39c12; box-shadow: 0 6px 0 #d35400; }
+        .btn-spin:active { box-shadow: 0 2px 0 #d35400; }
         .hidden { display: none; }
-        
-        .blur-effect {
-            filter: blur(4px);
-            opacity: 0.8;
-            transform: scale(1.05);
-        }
-
+        .blur-effect { filter: blur(4px); opacity: 0.8; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -262,34 +164,25 @@
         <div class="decor-item d4">🎁</div>
         <div class="decor-item d5">🎈</div>
         <div class="decor-item d6">🎁</div>
-        <div class="decor-item d7">🎈</div>
     </div>
 
     <div class="container">
         
         <div class="header-section" id="winner-header">
             <div class="trophy-icon">🏆</div>
-            <h1>ПОБЕДИТЕЛЬ<br>НАЙДЕН!</h1>
+            <h1>ПОБЕДИТЕЛЬ<br>ОПРЕДЕЛЕН!</h1>
         </div>
 
         <div class="card">
-            <div class="label-text">ID выигрышного билета</div>
+            <div class="label-text">Никнейм участника</div>
             
             <div class="ticket-display">
-                <div id="display-id">0000000</div>
-            </div>
-
-            <div class="user-info">
-                <div class="avatar-placeholder">👤</div>
-                <div class="user-name" id="user-name-display">Ожидание...</div>
-                <div class="timestamp">Участник подтвержден</div>
+                <div id="display-id">@ROZIGRYSH</div>
             </div>
         </div>
 
-        <div class="btn-container">
-            <button id="spin-btn" class="btn btn-spin">НАЧАТЬ РОЗЫГРЫШ</button>
-            <button id="send-btn" class="btn hidden">💬 Связаться с победителем</button>
-        </div>
+        <button id="spin-btn" class="btn btn-spin">НАЧАТЬ РОЗЫГРЫШ</button>
+        <button id="send-btn" class="btn hidden">💬 Связаться с победителем</button>
 
     </div>
 
@@ -297,106 +190,100 @@
         const tg = window.Telegram.WebApp;
         tg.expand(); 
 
-        // СПИСОК УЧАСТНИКОВ
+        // ТВОЙ НОВЫЙ СПИСОК НИКОВ
         const participants = [
-            "550605652", "1597985013", "8419976249", "7945922768", "517873126",
-            "1861451168", "7734876506", "1854932939", "1871676088", "1861451168",
-            "445195021", "635812082", "915868578", "1331811492", "492574599",
-            "813874646", "7698016067", "8034339835", "1706958950", "364207672",
-            "8565090136", "1766466746", "615298392", "405203659", "1631710656",
-            "85307719", "5378585403", "840455913", "259493394", "212094399",
-            "5164460627", "2072457584", "769185899", "1197364299", "1177536933",
-            "1921802018", "279643290", "1757883681", "329508160", "1302309876",
-            "7487867122", "1138593347", "1955748867", "571181336", "2033205905",
-            "1248443153", "867747337", "1150969696", "980637250", "418772521",
-            "1344891758", "2007432621", "742440405", "831857420", "746273920",
-            "5242459051", "5235123875", "913430194", "444069806", "7909218422",
-            "729564002", "6495686955", "1397573032", "1078831576", "1362100325",
-            "5197671141", "380860537", "6151174260", "1084442323", "693259655",
-            "8300377158", "8197344106", "648018494", "1830650453", "1016022102",
-            "2019768544", "1968190272", "7960188048", "1523688372", "7824519653",
-            "892066143", "88645013", "5168376671", "678967162"
+            "MrMartin71", "MargoS_77", "viktoriaSavonenko", "grizzly056", "evaViktori",
+            "ValentinaSeva", "grizzly056", "DionisG", "magomedova1005", "sidmariya",
+            "ReginaaGi", "garanin_nv", "Sablina_Olga", "Panlopp", "LuckyKotz",
+            "Vitali_5M", "vlmorgunov", "gpa056", "MariiaMai", "Irrina_Nikolaevna",
+            "Guns748", "flash709", "granovskayana", "pl_leonid", "Asya_Shlikova",
+            "Elizzzaveta_z", "infinity558", "Dear_ver02", "malenkovaj", "Avakym70",
+            "PlushPepeRARE", "blackfly_info", "netzg", "yana_ostrov", "AlexProver",
+            "an_mari_an", "L_Lopatyuk", "Olga_v_panova", "kris2866", "VasilchikovaJulia",
+            "ii_kot_ii", "aleshkovaksenia", "Lera_lucky01", "F1n4h", "zzykova",
+            "alexlatyshkevich", "TopSith", "Adochkasolnishko", "Liar_lifestyle", "alina_nnazarova",
+            "Porrazitt", "eVgenijZV", "ya_barysha", "masha_zaltsman22", "Latypova2104",
+            "Iyuvasilev", "Alisi_23", "Tatyana196509", "slepki_store", "WaterFireal",
+            "alekssBrik", "Vita_Minka94", "Svetlash_braids", "Teanagut", "Fantazeras",
+            "Vero_Nika0209", "synack64", "zoyaignatova", "Lechandro", "audi_quattro_4_2"
         ];
 
         const displayId = document.getElementById('display-id');
         const spinBtn = document.getElementById('spin-btn');
         const sendBtn = document.getElementById('send-btn');
         const winnerHeader = document.getElementById('winner-header');
-        const userNameDisplay = document.getElementById('user-name-display');
         
-        let finalWinnerId = null;
+        let finalWinnerName = null;
 
         spinBtn.addEventListener('click', () => {
             startRoulette(participants);
         });
 
+        // Отправка ника боту
         sendBtn.addEventListener('click', () => {
-            if (finalWinnerId) {
-                tg.sendData(finalWinnerId);
+            if (finalWinnerName) {
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.sendData(finalWinnerName);
+                // Подстраховка для закрытия
+                setTimeout(() => { tg.close(); }, 100);
             }
         });
 
-        function startRoulette(ids) {
-            spinBtn.style.display = 'none'; // Скрываем кнопку старта
-            userNameDisplay.innerText = "Определение...";
-            
-            // Запускаем анимацию цифр
+        function startRoulette(names) {
+            spinBtn.style.display = 'none';
             displayId.classList.add('blur-effect');
 
             let speed = 40; 
             let duration = 3000;
             let startTime = Date.now();
             
-            // Выбираем победителя
-            const winnerIndex = Math.floor(Math.random() * ids.length);
-            finalWinnerId = ids[winnerIndex];
+            const winnerIndex = Math.floor(Math.random() * names.length);
+            finalWinnerName = names[winnerIndex];
 
             const interval = setInterval(() => {
-                const randomId = ids[Math.floor(Math.random() * ids.length)];
-                displayId.innerText = randomId;
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                // Добавляем собачку для красоты при прокрутке
+                displayId.innerText = "@" + randomName;
+                
                 const elapsed = Date.now() - startTime;
 
                 if (elapsed > duration) {
                     speed += 30;
                     if (speed > 450) {
                         clearInterval(interval);
-                        finalizeWinner(finalWinnerId);
+                        finalizeWinner(finalWinnerName);
                     } else {
                         clearInterval(interval);
-                        runTick(ids, speed, finalWinnerId);
+                        runTick(names, speed, finalWinnerName);
                     }
                 }
             }, speed);
 
-            function runTick(idList, currentSpeed, finalWinner) {
+            function runTick(nameList, currentSpeed, finalWinner) {
                 const tick = setInterval(() => {
-                    const randomId = idList[Math.floor(Math.random() * idList.length)];
-                    displayId.innerText = randomId;
+                    const randomName = nameList[Math.floor(Math.random() * nameList.length)];
+                    displayId.innerText = "@" + randomName;
                     currentSpeed += 60;
                     clearInterval(tick);
                     
                     if (currentSpeed > 700) {
                         finalizeWinner(finalWinner);
                     } else {
-                        runTick(idList, currentSpeed, finalWinner);
+                        runTick(nameList, currentSpeed, finalWinner);
                     }
                 }, currentSpeed);
             }
         }
 
-        function finalizeWinner(winnerId) {
-            displayId.innerText = winnerId;
+        function finalizeWinner(winnerName) {
+            displayId.innerText = "@" + winnerName;
             displayId.classList.remove('blur-effect');
             tg.HapticFeedback.notificationOccurred('success');
-
+            
             // Показываем заголовок
             winnerHeader.style.opacity = '1';
             winnerHeader.style.transform = 'translateY(0)';
-
-            // Обновляем инфо
-            userNameDisplay.innerText = "Счастливчик!";
             
-            // Показываем кнопку связи
             sendBtn.classList.remove('hidden');
         }
     </script>
