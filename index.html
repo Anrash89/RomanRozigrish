@@ -64,6 +64,20 @@
             text-align: center;
         }
 
+        /* ЛОГОТИП */
+        .logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-img {
+            width: 100%;
+            max-width: 180px; /* Размер логотипа */
+            height: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+        }
+
         .header-section {
             opacity: 0;
             transform: translateY(-20px);
@@ -122,7 +136,6 @@
 
         #display-id {
             font-family: 'Montserrat', sans-serif;
-            /* Шрифт чуть меньше, чтобы длинные ники влезали */
             font-size: 24px; 
             font-weight: 800;
             color: var(--text-gold);
@@ -168,6 +181,10 @@
 
     <div class="container">
         
+        <div class="logo-container">
+            <img src="https://i.imgur.com/your-logo-link.png" alt="Roman Magic Logo" class="logo-img">
+        </div>
+
         <div class="header-section" id="winner-header">
             <div class="trophy-icon">🏆</div>
             <h1>ПОБЕДИТЕЛЬ<br>ОПРЕДЕЛЕН!</h1>
