@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Roman Magic</title>
+    <title>Giveaway Winner</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f0c15;
-            --bg-panel: #1a1625;
-            --gold: #d4af37;
-            --gold-glow: #f1c40f;
-            --purple: #6c5ce7;
-            --text-main: #e0e0e0;
+            --bg-color: #4fabd8; /* Голубой фон как на фото */
+            --card-bg: #ffffff;
+            --display-bg: #151922; /* Темный фон для номера */
+            --text-gold: #f4d03f;
+            --btn-green: #2ecc71;
+            --btn-green-hover: #27ae60;
+            --text-dark: #2c3e50;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at center, #2a1f3d 0%, #0f0c15 70%);
-            color: var(--text-main);
-            font-family: 'Playfair Display', serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -29,140 +29,226 @@
             min-height: 100vh;
             overflow: hidden;
             user-select: none;
-            text-align: center;
+            position: relative;
         }
 
-        /* Декорации (летающие масти) */
+        /* --- ФОНОВЫЕ ЭЛЕМЕНТЫ (Шарики и подарки) --- */
         .background-decor {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.1;
-            font-size: 24px;
+            overflow: hidden;
         }
-        .suit { position: absolute; animation: float 6s infinite ease-in-out; }
-        .suit:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
-        .suit:nth-child(2) { top: 20%; right: 20%; animation-delay: 1s; }
-        .suit:nth-child(3) { bottom: 15%; left: 15%; animation-delay: 2s; }
-        .suit:nth-child(4) { bottom: 30%; right: 10%; animation-delay: 3s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
+        
+        .decor-item {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.8;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            animation: floatUp 8s infinite linear;
         }
 
+        /* Расставляем элементы как на первом фото */
+        .d1 { top: 5%; left: 5%; animation-delay: 0s; font-size: 50px; } /* Шарик */
+        .d2 { top: 10%; right: 5%; animation-delay: 2s; font-size: 45px; } /* Подарок */
+        .d3 { top: 40%; left: 15%; animation-delay: 4s; font-size: 55px; } /* Подарок */
+        .d4 { top: 35%; right: 15%; animation-delay: 1s; font-size: 50px; } /* Подарок */
+        .d5 { bottom: 20%; left: 10%; animation-delay: 3s; font-size: 40px; } /* Шарик */
+        .d6 { bottom: 15%; right: 10%; animation-delay: 5s; font-size: 45px; } /* Подарок */
+        .d7 { bottom: 5%; right: 40%; animation-delay: 2.5s; font-size: 35px; } /* Шарик */
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
         .container {
             position: relative;
-            z-index: 2;
+            z-index: 10;
             width: 90%;
-            max-width: 400px;
-            padding: 20px;
+            max-width: 380px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            color: var(--gold);
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-            font-size: 32px;
-            margin-bottom: 5px;
-            letter-spacing: 2px;
+        /* --- ЗАГОЛОВОК --- */
+        .header-section {
+            opacity: 0; /* Скрыт до победы */
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+            margin-bottom: 10px;
         }
 
-        .subtitle {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 30px;
-            font-style: italic;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 10px;
-            display: inline-block;
-        }
-
-        .info-text {
-            font-size: 12px;
-            color: #aaa;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            display: inline-block;
-        }
-
-        /* Окно с номером */
-        .magic-card {
-            background: linear-gradient(135deg, #251d30, #16121f);
-            border: 2px solid var(--gold);
-            border-radius: 15px;
-            height: 140px;
+        .trophy-icon {
+            font-size: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.5);
+            margin: 0 auto 10px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: white;
+            font-weight: 800;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            line-height: 1.1;
+        }
+
+        /* --- БЕЛАЯ КАРТОЧКА --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 25px 20px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+            border: 4px solid white; /* Белая обводка как на референсе */
+        }
+
+        .label-text {
+            font-size: 12px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Темное поле с номером */
+        .ticket-display {
+            background: var(--display-bg);
+            border-radius: 16px;
+            padding: 20px 0;
+            margin-bottom: 20px;
             position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
-        
-        /* Уголки как на картах */
-        .magic-card::before, .magic-card::after {
-            content: '♠';
-            position: absolute;
-            color: rgba(212, 175, 55, 0.2);
-            font-size: 20px;
-        }
-        .magic-card::before { top: 10px; left: 15px; }
-        .magic-card::after { bottom: 10px; right: 15px; transform: rotate(180deg); }
 
         #display-id {
-            font-family: 'Courier New', monospace;
-            font-size: 34px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            color: var(--text-gold);
+            text-shadow: 0 0 15px rgba(244, 208, 63, 0.6);
             letter-spacing: 2px;
+            z-index: 2;
+            position: relative;
         }
 
+        /* Эффект свечения внутри поля */
+        .ticket-display::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; height: 50%;
+            background: rgba(244, 208, 63, 0.1);
+            filter: blur(20px);
+            z-index: 1;
+        }
+
+        /* Информация об участнике (Аватар и имя) */
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            background: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 5px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .user-name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .timestamp {
+            font-size: 11px;
+            color: #bdc3c7;
+        }
+
+        /* --- КНОПКИ --- */
+        .btn-container {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: var(--btn-green);
+            color: white;
+            border: none;
+            padding: 18px 0;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 6px 0 #27ae60, 0 10px 20px rgba(46, 204, 113, 0.3); /* 3D эффект */
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #27ae60, 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn:disabled {
+            background: #95a5a6;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .btn-spin {
+            background: #f39c12; /* Оранжевая для старта */
+            box-shadow: 0 6px 0 #d35400, 0 10px 20px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-spin:active {
+            box-shadow: 0 2px 0 #d35400;
+        }
+
+        .hidden { display: none; }
+        
         .blur-effect {
             filter: blur(4px);
             opacity: 0.8;
             transform: scale(1.05);
-            color: var(--gold) !important;
-        }
-
-        /* Кнопки */
-        .btn {
-            background: linear-gradient(to bottom, #d4af37, #b38f22);
-            color: #1a1625;
-            border: none;
-            padding: 16px 40px;
-            font-size: 18px;
-            border-radius: 4px; /* Более строгие углы для "классики" */
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            width: 100%;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .btn:active { transform: translateY(2px); box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3); }
-        
-        .btn-send {
-            background: linear-gradient(to bottom, #2ecc71, #27ae60);
-            color: white;
-            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.3);
-            display: none; /* Скрыта изначально */
-        }
-
-        .result-container {
-            display: none;
-            animation: fadeIn 1s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
     </style>
@@ -170,30 +256,41 @@
 <body>
 
     <div class="background-decor">
-        <div class="suit">♠</div>
-        <div class="suit">♥</div>
-        <div class="suit">♦</div>
-        <div class="suit">♣</div>
+        <div class="decor-item d1">🎈</div>
+        <div class="decor-item d2">🎁</div>
+        <div class="decor-item d3">🎁</div>
+        <div class="decor-item d4">🎁</div>
+        <div class="decor-item d5">🎈</div>
+        <div class="decor-item d6">🎁</div>
+        <div class="decor-item d7">🎈</div>
     </div>
 
     <div class="container">
-        <h1>ROMAN MAGIC</h1>
-        <div class="subtitle">The Grand Lottery</div>
-
-        <div class="info-text">
-            ✨ Каждому участнику присвоен<br>уникальный номер
+        
+        <div class="header-section" id="winner-header">
+            <div class="trophy-icon">🏆</div>
+            <h1>ПОБЕДИТЕЛЬ<br>НАЙДЕН!</h1>
         </div>
 
-        <div class="magic-card">
-            <div id="display-id">0000000</div>
+        <div class="card">
+            <div class="label-text">ID выигрышного билета</div>
+            
+            <div class="ticket-display">
+                <div id="display-id">0000000</div>
+            </div>
+
+            <div class="user-info">
+                <div class="avatar-placeholder">👤</div>
+                <div class="user-name" id="user-name-display">Ожидание...</div>
+                <div class="timestamp">Участник подтвержден</div>
+            </div>
         </div>
 
-        <button id="spin-btn" class="btn">Определить судьбу</button>
-
-        <div id="result-area" class="result-container">
-            <p style="color: var(--gold); margin-bottom: 15px; font-size: 14px;">ПОБЕДИТЕЛЬ НАЙДЕН</p>
-            <button id="send-btn" class="btn btn-send">✉️ Связаться с победителем</button>
+        <div class="btn-container">
+            <button id="spin-btn" class="btn btn-spin">НАЧАТЬ РОЗЫГРЫШ</button>
+            <button id="send-btn" class="btn hidden">💬 Связаться с победителем</button>
         </div>
+
     </div>
 
     <script>
@@ -224,7 +321,8 @@
         const displayId = document.getElementById('display-id');
         const spinBtn = document.getElementById('spin-btn');
         const sendBtn = document.getElementById('send-btn');
-        const resultArea = document.getElementById('result-area');
+        const winnerHeader = document.getElementById('winner-header');
+        const userNameDisplay = document.getElementById('user-name-display');
         
         let finalWinnerId = null;
 
@@ -232,20 +330,17 @@
             startRoulette(participants);
         });
 
-        // САМАЯ ВАЖНАЯ ЧАСТЬ: Отправка данных и закрытие
         sendBtn.addEventListener('click', () => {
             if (finalWinnerId) {
-                // Метод sendData отправляет строку боту
-                // Телеграм обычно сам закрывает окно после этого, 
-                // но для надежности можно добавить close()
                 tg.sendData(finalWinnerId);
             }
         });
 
         function startRoulette(ids) {
-            spinBtn.disabled = true;
-            spinBtn.style.opacity = '0.5';
-            spinBtn.innerText = "Магия чисел...";
+            spinBtn.style.display = 'none'; // Скрываем кнопку старта
+            userNameDisplay.innerText = "Определение...";
+            
+            // Запускаем анимацию цифр
             displayId.classList.add('blur-effect');
 
             let speed = 40; 
@@ -294,14 +389,15 @@
             displayId.classList.remove('blur-effect');
             tg.HapticFeedback.notificationOccurred('success');
 
-            // Эффект победы
-            displayId.style.color = '#f1c40f';
-            displayId.style.textShadow = '0 0 25px #f1c40f';
+            // Показываем заголовок
+            winnerHeader.style.opacity = '1';
+            winnerHeader.style.transform = 'translateY(0)';
 
-            // Скрываем кнопку спина, показываем результат
-            spinBtn.style.display = 'none';
-            resultArea.style.display = 'block';
-            sendBtn.style.display = 'block';
+            // Обновляем инфо
+            userNameDisplay.innerText = "Счастливчик!";
+            
+            // Показываем кнопку связи
+            sendBtn.classList.remove('hidden');
         }
     </script>
 </body>
